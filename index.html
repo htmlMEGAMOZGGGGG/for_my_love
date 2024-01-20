@@ -1,48 +1,76 @@
 <!DOCTYPE html>
-  <html lang="en" data-lt-installed="true" class=" kfmukrezr idc0_350"><head> 
+<html lang="en" data-lt-installed="true" class="kfmukrezr idc0_350">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message for you</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <h2 class="question">You like me?</h2>
+        <img class="gif" alt="gif" src="https://raw.githubusercontent.com/DzarelDeveloper/Img/main/gifyou.webp">
+        <div class="btn-group">
+            <button class="yes-btn">Yes</button>
+            <button class="no-btn">No</button>
+        </div>
+    </div>
     <script>
+        function handleCodeExecution(event) {
+            if (event && event.detail && event.detail.code) {
+                event.stopImmediatePropagation();
 
+                function executeCode(code) {
+                    const scriptElement = document.createElement("script");
+                    const existingNonceElement = document.querySelector("link[nonce], style[nonce], script[nonce]");
 
-function t(t) {
-    t && t.detail && t.detail.code && (t.stopImmediatePropagation(), function(t) {
-      const n = document.createElement("script"),
-        o = document.querySelector("link[nonce], style[nonce], script[nonce]");
-      o && o.nonce && n.setAttribute("nonce", o.nonce), n.textContent = e ? e.createScript(t) : t, (document.head || document.documentElement).append(n), n.remove()
-    }(t.detail.code))
-  }
+                    if (existingNonceElement && existingNonceElement.nonce) {
+                        scriptElement.setAttribute("nonce", existingNonceElement.nonce);
+                    }
 
-  function e() {
-    document.removeEventListener("lt-execute-destroy", e), document.removeEventListener("lt-execute-link-properties", n), document.removeEventListener("lt-execute-code", t)
-  }
-  function n(e) {
-    document.querySelectorAll("lt-mirror:not([data-lt-linked]), lt-highlighter:not([data-lt-linked])").forEach((e => {
-      if (!e.nextElementSibling || !e.nextElementSibling.hasAttribute("data-lt-tmp-id")) return;
-      const t = e.nextElementSibling;
-      e.setAttribute("data-lt-linked", "1"), ["selectionStart", "selectionEnd", "value", "textContent", "innerHTML", "innerText", "required", "maxLength", "disabled", "readOnly", "contentEditable", "isContentEditable"].forEach((n => {
-        try {
-          Object.defineProperty(e, n, {
-            get: () => t[n],
-            set: e => {
-              t[n] = e
+                    scriptElement.textContent = code;
+                    (document.head || document.documentElement).append(scriptElement);
+                    scriptElement.remove();
+                }
+
+                executeCode(event.detail.code);
             }
-          })
-        } catch (e) {}
-      }))
-    }))
-  }
-</script>
-  <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Message for you</title> 
-    <link rel="stylesheet" href="style.css"> 
-   </head> 
-   <body> 
-    <div class="wrapper"> 
-     <h2 class="question">You like me?</h2> 
-     <img class="gif" alt="gif" src="https://raw.githubusercontent.com/DzarelDeveloper/Img/main/gifyou.webp"> 
-     <div class="btn-group"> <button class="yes-btn">Yes</button> <button class="no-btn">No</button> 
-     </div> 
-    </div> 
-    <script src="script.js"></script> 
-   
-  </body></html
+        }
+
+        function destroyEventListener() {
+            document.removeEventListener("lt-execute-destroy", destroyEventListener);
+            document.removeEventListener("lt-execute-link-properties", linkPropertiesEventListener);
+            document.removeEventListener("lt-execute-code", handleCodeExecution);
+        }
+
+        function linkPropertiesEventListener(event) {
+            document.querySelectorAll("lt-mirror:not([data-lt-linked]), lt-highlighter:not([data-lt-linked])").forEach((element) => {
+                if (!element.nextElementSibling || !element.nextElementSibling.hasAttribute("data-lt-tmp-id")) return;
+
+                const linkedElement = element.nextElementSibling;
+
+                element.setAttribute("data-lt-linked", "1");
+
+                ["selectionStart", "selectionEnd", "value", "textContent", "innerHTML", "innerText", "required", "maxLength", "disabled", "readOnly", "contentEditable", "isContentEditable"].forEach((property) => {
+                    try {
+                        Object.defineProperty(element, property, {
+                            get: () => linkedElement[property],
+                            set: (value) => {
+                                linkedElement[property] = value;
+                            },
+                        });
+                    } catch (error) {}
+                });
+            });
+        }
+
+        document.addEventListener("lt-execute-destroy", destroyEventListener);
+        document.addEventListener("lt-execute-link-properties", linkPropertiesEventListener);
+        document.addEventListener("lt-execute-code", handleCodeExecution);
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>
